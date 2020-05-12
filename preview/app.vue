@@ -28,7 +28,12 @@
         :h="componentSize.height"
       >
         <div class="sizeTip">组件显示区域({{componentSize.width}}*{{componentSize.height}})</div>
-        <com v-bind="componentProps" ref="component"></com>
+        <div v-show="visible" class="node" :style="style">
+          <com v-bind="componentProps" ref="component">
+            <div class="node" slot='content' style="background: red; width: 80%; height: 60%;" :style="contentStyle"></div>
+            <!-- <example slot='close'></example> -->
+          </com>
+        </div>
       </vue-drag-resize>
       <div class="block editor" :style="editerStyle">
         <div class="title" @click="editerActive=true" @mousedown="mousedown" @mouseup="mouseup">编辑面板</div>
@@ -54,6 +59,7 @@
   import Toast from './components/Toast'
   import MessageBox from 'mint-ui/message-box/'
   import 'mint-ui/message-box/style.css'
+  import pkg from '../package.json'
 
   export default {
     components: {Toast, Loading, ImgViewer, example, com, Editor, Attribute},
@@ -124,6 +130,16 @@
     },
     data () {
       return {
+        style: pkg.style,
+        visible: true,
+        contentStyle: {
+          margin: 'auto',
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+        },
         // 开发过程的分辨率选项
         sizes: {
           'Mobile S': {
@@ -147,7 +163,7 @@
             height: 720
           }
         },
-        sizeIndex: 'Mobile S',
+        sizeIndex: 'Desktop',
         isInit: false, // 是否初始化完成
         editerActive: false, // 编辑面板是否要拖拽了
         componentSize: { // 组件当前的大小
@@ -155,7 +171,7 @@
           height: 480
         },
         editerPanel: {
-          x: 600,
+          x: 960,
           y: 0,
           active: false,
           org: {x: 0, y: 0},
